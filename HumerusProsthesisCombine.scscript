@@ -34,7 +34,7 @@ extenPro= 100 # Extension length of the prosthesis
 # Initialisation of the script
 
 # Insert from a file
-DocumentInsert.Execute(r"C:\Centrale\iGEM\MechanicalModel\Files\LeftHumerus_FullInside.scdoc", FileSettings1, GetMaps("fccf3fbc"))
+DocumentInsert.Execute(r"Path to the file", FileSettings1, GetMaps("fccf3fbc"))
 # EndBlock
 
 # Copy to Clipboard
