@@ -1,0 +1,284 @@
+# @author Aymen GHANEME, iGEM Pasteur Paris 2018, CentraleSupelec, France
+
+# Python Script, API Version = V17
+
+#Usefull Data
+
+#Center of the joint with the bone 
+
+# Creat sphear
+#SphereBody.Create(Point.Create(MM(208.991026022142), MM(-61.2161851231936), MM(1068.6763540311)), Point.Create(MM(220.747912230755), MM(-61.9214118650828), MM(1067.35408228412)), ExtrudeType.None, Info3)
+# EndBlock
+
+LengthBone1=307 #Corresponds to distance between planes
+
+LenghtBone2=230 #Corresponds to the distance between where we can cut
+
+CuttingPlanePosition=200 #Has to be greater than 50 mm and lesser than 250 mm
+
+
+latw=2    # lateral width of the ceramic layer
+
+longw=5    # longitudinal width of the ceramic layer
+
+Rout=4    # Outer Radius of the beam/prosthesis
+
+Rint=3   # Inner Radius of the beam/prosthesis
+
+lbeam=10 # Length of the beam
+
+extenPro= 100 # Extension length of the prosthesis
+
+
+
+# Initialisation of the script
+
+# Insert from a file
+DocumentInsert.Execute(r"C:\Centrale\iGEM\MechanicalModel\Files\LeftHumerus_FullInside.scdoc", FileSettings1, GetMaps("fccf3fbc"))
+# EndBlock
+
+# Copy to Clipboard
+result = Copy.ToClipboard(Selection.Create(Body9))
+# EndBlock
+
+# Past from the Clipboard
+result = Paste.FromClipboard()
+# EndBlock
+
+# Delete objects
+selection = Selection.Create(Component1)
+result = Delete.Execute(selection)
+# EndBlock
+
+# Create a plane of reference
+selection = Selection.Create(EdgePoint1)
+result = DatumPlaneCreator.Create(selection, False, Info1)
+# EndBlock
+
+# Translate Along Z Handle
+selection = Selection.Create(DatumPlane1)
+direction = Move.GetDirection(selection)
+options = MoveOptions()
+result = Move.Translate(selection, direction, MM(-42.95), options, Info2)
+# EndBlock
+
+# Rotate About X Handle
+selection = Selection.Create(DatumPlane1)
+axis = Move.GetAxis(selection, HandleAxis.X)
+options = MoveOptions()
+result = Move.Rotate(selection, axis, DEG(10), options, Info21)
+# EndBlock
+
+#Initialisation DONE
+
+#Cutting plane process
+
+# Translate Along Z Handle
+selection = Selection.Create(DatumPlane1)
+direction = Move.GetDirection(selection)
+options = MoveOptions()
+result = Move.Translate(selection, direction, MM(75), options, Info4)
+# EndBlock
+
+# Diviser les corps par un plan
+selection = Selection.Create(Body3)
+datum = Selection.Create(DatumPlane1)
+result = SplitBody.Execute(selection, datum, Info5)
+# EndBlock
+
+# Supprimer les objets
+selection = Selection.Create(Body3)
+result = Combine.RemoveRegions(selection, Info6)
+# EndBlock
+
+# Modify visibility of the object
+selection = Selection.Create(DatumPlane1)
+visibility = VisibilityType.Hide
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
+
+# Set Sketch Plane
+selection = Selection.Create(Face1)
+result = ViewHelper.SetSketchPlane(selection, Info7)
+# EndBlock
+
+# Draw a circle
+origin = Point2D.Create(MM(2), MM(-1.12147162216469E-14))
+result = SketchCircle.Create(origin, MM(Rout+latw))
+# EndBlock
+
+# Modify the visibility of the object
+selection = Selection.Create(Body6)
+visibility = VisibilityType.Hide
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
+
+# Solidify Sketch
+mode = InteractionMode.Solid
+result = ViewHelper.SetViewMode(mode, Info8)
+# EndBlock
+
+# Modify the color
+selection = Selection.Create(Face2)
+options = SetColorOptions()
+options.FaceColorTarget = FaceColorTarget.Body
+ColorHelper.SetColor(selection, options, Color.FromArgb(255, 255, 255, 255))
+# EndBlock
+
+# Extrude 1 face
+selection = Selection.Create(Face2)
+options = ExtrudeFaceOptions()
+options.ExtrudeType = ExtrudeType.Cut
+result = ExtrudeFaces.Execute(selection, MM(-(lbeam+longw)), options, Info12)
+# EndBlock
+
+# Modify the visibility of the object
+selection = Selection.Create(Body6)
+visibility = VisibilityType.Show
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
+
+# Intersecting objects
+targets = Selection.Create(Body6)
+tools = Selection.Create(Body7)
+options = MakeSolidsOptions()
+result = Combine.Intersect(targets, tools, options, Info16)
+# EndBlock
+
+# Delete objects
+selection = Selection.Create(Body8)
+result = Combine.RemoveRegions(selection, Info17)
+# EndBlock
+
+# Modify the visibility of the object
+selection = Selection.Create(Body6)
+visibility = VisibilityType.Hide
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
+
+# Set Sketch Plane
+selection = Selection.Create(Face3)
+result = ViewHelper.SetSketchPlane(selection, Info24)
+# EndBlock
+
+# Draw a circle
+origin = Point2D.Create(MM(0), MM(0))
+result = SketchCircle.Create(origin, MM(Rout))
+# EndBlock
+
+# Solidify Sketch
+mode = InteractionMode.Solid
+result = ViewHelper.SetViewMode(mode, Info26)
+# EndBlock
+
+# Extrude 1 face
+selection = Selection.Create(Face4)
+options = ExtrudeFaceOptions()
+options.ExtrudeType = ExtrudeType.Cut
+result = ExtrudeFaces.Execute(selection, MM(-lbeam), options, Info30)
+# EndBlock
+
+# Set Sketch Plane
+selection = Selection.Create(Face11)
+result = ViewHelper.SetSketchPlane(selection, Info31)
+# EndBlock
+
+# Modify the visibility of the object
+selection = Selection.Create(Body7)
+visibility = VisibilityType.Hide
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
+
+# Draw a circle
+origin = Point2D.Create(MM(0), MM(0))
+result = SketchCircle.Create(origin, MM(Rout))
+# EndBlock
+
+# Draw a circle
+origin = Point2D.Create(MM(0), MM(0))
+result = SketchCircle.Create(origin, MM(Rint))
+# EndBlock
+
+# Solidify Sketch
+mode = InteractionMode.Solid
+result = ViewHelper.SetViewMode(mode, Info32)
+# EndBlock
+
+# Delete the selection
+selection = Selection.Create(Face13)
+result = Delete.Execute(selection)
+# EndBlock
+
+# Modifier la couleur
+selection = Selection.Create(Face14)
+options = SetColorOptions()
+options.FaceColorTarget = FaceColorTarget.Body
+ColorHelper.SetColor(selection, options, Color.FromArgb(255, 255, 128, 128))
+# EndBlock
+
+# Extrude 1 face
+selection = Selection.Create(Face14)
+options = ExtrudeFaceOptions()
+options.ExtrudeType = ExtrudeType.ForceIndependent
+result = ExtrudeFaces.Execute(selection, MM(-lbeam), options, Info34)
+# EndBlock
+
+# Set Sketch Plane
+selection = Selection.Create(Face15)
+result = ViewHelper.SetSketchPlane(selection, Info35)
+# EndBlock
+
+# Modify the visibility of the object
+selection = Selection.Create(Body10)
+visibility = VisibilityType.Hide
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
+
+# Draw a circle
+origin = Point2D.Create(MM(0), MM(0))
+result = SketchCircle.Create(origin, MM(Rout+latw+2))
+# EndBlock
+
+# Solidify Sketch
+mode = InteractionMode.Solid
+result = ViewHelper.SetViewMode(mode, Info36)
+# EndBlock
+
+# Extrude 1 face
+selection = Selection.Create(Face16)
+options = ExtrudeFaceOptions()
+options.ExtrudeType = ExtrudeType.Add
+result = ExtrudeFaces.Execute(selection, MM(75-25), options, Info37)
+# EndBlock
+
+# Modify the visibility of the object
+selection = Selection.Create(Body10)
+visibility = VisibilityType.Show
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
+
+# Combine objects
+targets = Selection.Create(Body10, Body11)
+result = Combine.Merge(targets, Info38)
+# EndBlock
+
+# Modify the visibility of the object
+selection = Selection.Create(Body7)
+visibility = VisibilityType.Show
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
+
+# Modify the visibility of the object
+selection = Selection.Create(Body6)
+visibility = VisibilityType.Show
+inSelectedView = False
+ViewHelper.SetObjectVisibility(selection, visibility, inSelectedView)
+# EndBlock
