@@ -10,12 +10,7 @@
 #SphereBody.Create(Point.Create(MM(208.991026022142), MM(-61.2161851231936), MM(1068.6763540311)), Point.Create(MM(220.747912230755), MM(-61.9214118650828), MM(1067.35408228412)), ExtrudeType.None, Info3)
 # EndBlock
 
-LengthBone1=307 #Corresponds to distance between planes
-
-LenghtBone2=230 #Corresponds to the distance between where we can cut
-
-CuttingPlanePosition=200 #Has to be greater than 50 mm and lesser than 250 mm
-
+CuttingPlanePosition=75 #Has to be greater than 50 mm and lesser than 250 mm
 
 latw=2    # lateral width of the ceramic layer
 
@@ -77,7 +72,7 @@ result = Move.Rotate(selection, axis, DEG(10), options, Info21)
 selection = Selection.Create(DatumPlane1)
 direction = Move.GetDirection(selection)
 options = MoveOptions()
-result = Move.Translate(selection, direction, MM(75), options, Info4)
+result = Move.Translate(selection, direction, MM(CuttingPlanePosition), options, Info4)
 # EndBlock
 
 # Diviser les corps par un plan
@@ -254,7 +249,7 @@ result = ViewHelper.SetViewMode(mode, Info36)
 selection = Selection.Create(Face16)
 options = ExtrudeFaceOptions()
 options.ExtrudeType = ExtrudeType.Add
-result = ExtrudeFaces.Execute(selection, MM(75-25), options, Info37)
+result = ExtrudeFaces.Execute(selection, MM(CuttingPlanePosition-25), options, Info37)
 # EndBlock
 
 # Modify the visibility of the object
